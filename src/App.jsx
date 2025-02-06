@@ -10,16 +10,30 @@ const [forminput,setforminput]=useState([
     phone:''
   }
 ])
+const [record,setRecord]=useState(JSON.parse(localStorage.getItem('user')) || [])
 const addfield=()=>{
   let newfild={
     id:Math.floor(Math.random()*100000),
     name:'',
     phone:''
   }
+
+  
   setforminput([...forminput,newfild])  
 }
+
+const changeinput=(event,index)=>{
+let data=[...forminput]
+data[index][event.target.name]=event.target.value
+setforminput(data)
+}
+const handlesubmit=()=>{
+  let newrecode=[...record,...forminput]
+  localStorage.setItem('user',JSON.stringify(newrecode))
+  setforminput([{name:'',phone:''}])
+}
 const remove=(id)=>{
-  const del =forminput.filter(val=>val.id != id)
+const del =forminput.filter(val=>val.id != id)
   setforminput(del)
 }
   return (
@@ -30,9 +44,9 @@ const remove=(id)=>{
          return(
           <tr>
           <td>Name :- </td>
-          <td><input type="text" name="name" /></td>
+          <td><input onChange={(event)=>changeinput(event,index)} type="text" name="name" value={val.name} /></td>
           <td>Phone : </td>
-          <td><input type="number" name="phone" /></td>
+          <td><input onChange={(event)=>changeinput(event,index)} type="number" name="phone" value={val.phone} /></td>
           <td>
             {
                 index == 0 ?(
@@ -40,6 +54,7 @@ const remove=(id)=>{
                 )
                 :(
                   <button onClick={()=>remove(val?.id)}>X</button>
+                  
                 )
 
             }
@@ -49,7 +64,10 @@ const remove=(id)=>{
         })
        }
      
-        <button onClick={()=>addfield()}>submit</button>
+        <button onClick={()=>addfield()}>Add</button>
+        <br />
+        <br />
+        <button onClick={()=>handlesubmit()}>submit</button>
       </div>
     </>
   )
